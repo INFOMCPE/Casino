@@ -1,0 +1,10 @@
+name: Casino
+main: Casino\Casino
+author: opkiler22789
+version: 4.0
+api: 2.0.0
+commands:
+  casino:
+    default: true
+    description: Сыграть в казино
+    aliases: [c]
