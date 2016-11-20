@@ -1,0 +1,38 @@
+language: php
+
+php:
+ - 7.0.12
+
+branches:
+ - master
+
+before_script:
+ - cd /home/travis/build/
+ - phpenv config-rm xdebug.ini
+ - pecl install channel://pecl.php.net/pthreads-3.1.6
+ - pecl install channel://pecl.php.net/weakref-0.3.2
+ - echo | pecl install channel://pecl.php.net/yaml-2.0.0
+ - git clone --recursive --depth=50 --branch=master https://github.com/pmmp/PocketMine-MP.git
+ - mkdir -p PocketMine-MP/plugins/Casino-src
+ - cp -rf opkiler22789/Casino/src PocketMine-MP/plugins/CAsino
+ - cp -rf opkiler22789/Casino/resources PocketMine-MP/plugins/Casino-src
+ - cp -rf opkiler22789/Casino/plugin.yml PocketMine-MP/plugins/Casino-src
+ - cp -rf opkiler22789/Casino/build.php PocketMine-MP/
+ - cd PocketMine-MP/plugins/
+ - wget -O DevTools.phar https://github.com/PocketMine/DevTools/releases/download/v1.11.0/DevTools_v1.11.0.phar
+ - cd /home/travis/build/PocketMine-MP
+
+script:
+ - php build.php
+
+deploy:
+  provider: releases
+  api_key: "$traviskey"
+  file: "/home/travis/build/PocketMine-MP/plugins/DevTools/Casino*.phar"
+  skip_cleanup: true
+  overwrite: true
+  on:
+    tags: false
+
+notifications:
+ email: true
