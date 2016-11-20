@@ -14,7 +14,7 @@ before_script:
  - echo | pecl install channel://pecl.php.net/yaml-2.0.0
  - git clone --recursive --depth=50 --branch=master https://github.com/pmmp/PocketMine-MP.git
  - mkdir -p PocketMine-MP/plugins/Casino-src
- - cp -rf opkiler22789/Casino/src PocketMine-MP/plugins/CAsino
+ - cp -rf opkiler22789/Casino/src PocketMine-MP/plugins/Casino-src
  - cp -rf opkiler22789/Casino/resources PocketMine-MP/plugins/Casino-src
  - cp -rf opkiler22789/Casino/plugin.yml PocketMine-MP/plugins/Casino-src
  - cp -rf opkiler22789/Casino/build.php PocketMine-MP/
