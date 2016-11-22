@@ -109,8 +109,8 @@ if($money >= $cheap){
              
                }
      
-$rand = array(100, 200, 300, 10, 50, 250, 0);
-$money = $rand[mt_rand(0,count($rand)-1)];
+$rand = array(100, 200, 300, 10, 50, 250, 1);
+$money = $rand[mt_rand(2,count($rand)-1)];
 
 	if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
 		
@@ -225,7 +225,7 @@ if($money >= $dear){
              
                }
 $rand = array(500,1000,100,0,300,750,50,250);
-$money = $rand[mt_rand(0,count($rand)-1)];
+$money = $rand[mt_rand(1,count($rand)-1)];
 if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
 		$this->eco->addMoney($sender, $money);
                }
@@ -332,7 +332,7 @@ if($money >= $rich){
                }
      
 $rand = array(500,1000,100,0,300,750,50,250,900,2000,1250,1150);
-$money = $rand[mt_rand(0,count($rand)-1)];
+$money = $rand[mt_rand(1,count($rand)-1)];
 
 if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
 		$this->eco->addMoney($sender, $money);
