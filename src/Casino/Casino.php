@@ -5,9 +5,13 @@ namespace Casino;
 use pocketmine\Server;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\utils\Utils;
+use pocketmine\network\protocol\Info;
 use pocketmine\Player;
+use pocketmine\level\Level;
+use pocketmine\block\Block;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
+use pocketmine\math\Vector3;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\item\enchantment\Enchantment;
@@ -22,6 +26,7 @@ use pocketmine\event\player\PlayerEvent;
 use EconomyPlus\EconomyPlus;
 use Casino\CheckVersionTask;
 use Casino\UpdaterTask;
+use BossBarAPI\API;
 
 class Casino extends PluginBase Implements Listener{
 
@@ -91,6 +96,7 @@ $sender->sendMessage("§9§l—————§eCasino§9—————\n§6/c li
       
       $sender->sendMessage("§e»§7{$url->cheap_def} - §b{$cheap} $ §7 {$url->game}\n§e»§7{$url->dear} - §b{$dear} $ §7 {$url->game}\n§e»§7{$url->rich} - §b{$rich} $ §7 {$url->game}");
      break;
+     
       case "cheap":
       if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
 $money = $this->eco->myMoney($sender); 
@@ -110,7 +116,7 @@ if($money >= $cheap){
                }
      
 $rand = array(100, 200, 300, 10, 50, 250, 1);
-$money = $rand[mt_rand(2,count($rand)-1)];
+$money = $rand[mt_rand(0,count($rand)-1)];
 
 	if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
 		
@@ -126,27 +132,53 @@ $player = $sender->getPlayer();
    
 //$sender->sendMessage("§9[§aCasino§9]§6»§e {$url->cheap_def} \n§e♦§6 {$url->ante}:§a {$cheap}$");
 $sender->sendMessage("§9[§aCasino§9]§6» §e {$url->cheap_def} \n♦ §6 {$url->ante}§a {$cheap}$");
+
 sleep(1);
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1");
-
+$v = Server::getInstance()->getVersion();
+//$sender->sendMessage($v);
+if (substr($v, 0, 6) === "v0.16."){
+$this->eid = API::addBossBar([$sender->getPlayer()], "§a{$sender->getName()} {$url->startc}");
+API::setTitle(sprintf("§e{$sender->getName()} {$url->startc}"), $this->eid);
+API::setPercentage(20, $this->eid);
+}
 sleep(1);
+
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1 2");
 
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(40, $this->eid);
+}
 sleep(1);
-$sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3");
 
+$sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3");
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(60, $this->eid);
+}
 sleep(1);
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3 4");
-
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(80, $this->eid);
+}
 $player->getlevel()->addSound(new FizzSound($player));
 sleep(1);
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3 4 §45");
-
-
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(100, $this->eid);
+sleep(1);
+$geto = Server::getInstance()->getOnlinePlayers();
+API::removeBossBar($geto, $this->eid);
+}
 if($money >= $cheap){
 $moneyd = $money - $cheap;
+if (substr($v, 0, 6) === "v0.16."){
+$this->eid = API::addBossBar([$sender->getPlayer()], "§e{$sender->getName()} {$url->wowb}");
+API::setTitle(sprintf("§e{$sender->getName()} {$url->wowb}"), $this->eid);
+API::setPercentage(100, $this->eid);
+}
 	if($this->getConfig()->get("Popup") == true){
 $player->getlevel()->addSound(new ExplodeSound($player));
+
 
 if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
 $moneye = $this->eco->myMoney($sender); 
@@ -162,6 +194,7 @@ if($this->getConfig()->get("Popup") == false){
 	
 $player->getlevel()->addSound(new ExplodeSound($player));
 
+
 if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
 $moneye = $this->eco->myMoney($sender); 
                }
@@ -171,11 +204,20 @@ $moneye = $this->eco->myMoney($sender);
                }
                
 $sender->sendMessage("§9[§aCasino§9]§6» §e♦§6{$url->won}:§a {$moneyd} $\n §e{$url->bal}§a {$moneye} $");
+if (substr($v, 0, 6) === "v0.16."){
+sleep(10);
 
+API::removeBossBar($geto, $this->eid);
+}
 }
 }
 if($money <= $cheap){
 	$moneyd = $money - $cheap;
+	if (substr($v, 0, 6) === "v0.16."){
+	$this->eid = API::addBossBar([$sender->getPlayer()], "§e{$sender->getName()} {$url->lostb}");
+API::setTitle(sprintf("§e{$sender->getName()} {$url->lostb}"), $this->eid);
+API::setPercentage(100, $this->eid);
+}
 	if($this->getConfig()->get("Popup") == true){
 
 $sender->sendPopup("§9[§aCasino§9]§6» §e♦§6{$url->lost}:§a {$moneyd} $\n §e{$url->bal}§a {$moneye} $");
@@ -190,6 +232,10 @@ $moneye = $this->eco->myMoney($sender);
                $moneye = EconomyPlus::getInstance()->getMoney($sender);
                }
 $sender->sendMessage("§9[§aCasino§9]§6» §e♦§6{$url->lost}§a {$moneyd} $\n §e{$url->bal}§a {$moneye} $");
+if (substr($v, 0, 6) === "v0.16."){
+sleep(10);
+API::removeBossBar($geto, $this->eid);
+}
 }
 }
      }else{
@@ -224,7 +270,7 @@ if($money >= $dear){
                $mi;
              
                }
-$rand = array(500,1000,100,0,300,750,50,250);
+$rand = array(500,1000,100,1,300,750,50,250);
 $money = $rand[mt_rand(1,count($rand)-1)];
 if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
 		$this->eco->addMoney($sender, $money);
@@ -238,23 +284,49 @@ $player = $sender->getPlayer();
 $sender->sendMessage("§9»»»»»§e".$url->dear."§9«««««\n§e♦§6".$url->ante.":§a".$dear." $");
 sleep(1);
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1");
-
+$v = Server::getInstance()->getVersion();
+//$sender->sendMessage($v);
+if (substr($v, 0, 6) === "v0.16."){
+$this->eid = API::addBossBar([$sender->getPlayer()], "§a{$sender->getName()} {$url->startd}");
+API::setTitle(sprintf("§e{$sender->getName()} {$url->startd}"), $this->eid);
+API::setPercentage(20, $this->eid);
+}
 sleep(1);
+
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1 2");
 
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(40, $this->eid);
+}
 sleep(1);
-$sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3");
 
+$sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3");
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(60, $this->eid);
+}
 sleep(1);
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3 4");
-
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(80, $this->eid);
+}
 $player->getlevel()->addSound(new FizzSound($player));
 sleep(1);
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3 4 §45");
-
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(100, $this->eid);
+sleep(1);
+$geto = Server::getInstance()->getOnlinePlayers();
+API::removeBossBar($geto, $this->eid);
+}
 
 if($money >= $dear){
 $moneyd = $money - $dear;
+
+if (substr($v, 0, 6) === "v0.16."){
+$this->eid = API::addBossBar([$sender->getPlayer()], "§e{$sender->getName()} {$url->wowbd}");
+API::setTitle(sprintf("§e{$sender->getName()} {$url->wowbd}"), $this->eid);
+API::setPercentage(100, $this->eid);
+}
 	if($this->getConfig()->get("Popup") == true){
 $player->getlevel()->addSound(new ExplodeSound($player));
 
@@ -280,9 +352,19 @@ $moneye = $this->eco->myMoney($sender);
                }
 $sender->sendMessage("§9[§aCasino§9]§6» §e♦§6{$url->won}:§a {$moneyd} $\n §e{$url->bal}§a {$moneye} $");
 }
+if (substr($v, 0, 6) === "v0.16."){
+sleep(10);
+API::removeBossBar($geto, $this->eid);
+}
 }
 if($money <= $dear){
 	$moneyd = $money - $dear;
+	
+if (substr($v, 0, 6) === "v0.16."){
+$this->eid = API::addBossBar([$sender->getPlayer()], "§e{$sender->getName()} {$url->lostbd}");
+API::setTitle(sprintf("§e{$sender->getName()} {$url->lostbd}"), $this->eid);
+API::setPercentage(100, $this->eid);
+}
 	if($this->getConfig()->get("Popup") == true){
 
 if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
@@ -305,6 +387,10 @@ $moneye = $this->eco->myMoney($sender);
                $moneye = EconomyPlus::getInstance()->getMoney($sender);
                }
 $sender->sendMessage("§9[§aCasino§9]§6» §e♦§6{$url->lost}:§a {$moneyd} $\n §e{$url->bal}§a {$moneye} $");
+}
+if (substr($v, 0, 6) === "v0.16."){
+sleep(10);
+API::removeBossBar($geto, $this->eid);
 }
 }
      }else{
@@ -331,7 +417,7 @@ if($money >= $rich){
              
                }
      
-$rand = array(500,1000,100,0,300,750,50,250,900,2000,1250,1150);
+$rand = array(500,1000,100,1,300,750,50,250,900,2000,1250,1150);
 $money = $rand[mt_rand(1,count($rand)-1)];
 
 if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
@@ -344,22 +430,48 @@ if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
                }
  
 $sender->sendMessage("§9»»»»»§e".$url->rich."§9«««««\n§e♦§6".$url->ante.":§a ".$rich."$"); 
+$v = Server::getInstance()->getVersion();
+if (substr($v, 0, 6) === "v0.16."){
+$this->eid = API::addBossBar([$sender->getPlayer()], "§a{$sender->getName()} {$url->startr}");
+API::setTitle(sprintf("§e{$sender->getName()} {$url->startr}"), $this->eid);
+API::setPercentage(20, $this->eid);
+}
 sleep(1);
-$sender->sendPopup("§9[§aCasino§9]§6»§e 1");
-sleep(1);
+
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1 2");
+
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(40, $this->eid);
+}
 sleep(1);
+
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3");
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(60, $this->eid);
+}
 sleep(1);
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3 4");
-
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(80, $this->eid);
+}
 $player->getlevel()->addSound(new FizzSound($player));
 sleep(1);
 $sender->sendPopup("§9[§aCasino§9]§6»§e 1 2 3 4 §45");
-
+if (substr($v, 0, 6) === "v0.16."){
+API::setPercentage(100, $this->eid);
+sleep(1);
+$geto = Server::getInstance()->getOnlinePlayers();
+API::removeBossBar($geto, $this->eid);
+}
 
 if($money >= $rich){
 $moneyd = $money - $rich;
+
+if (substr($v, 0, 6) === "v0.16."){
+$this->eid = API::addBossBar([$sender->getPlayer()], "§e{$sender->getName()} {$url->wowbr}");
+API::setTitle(sprintf("§e{$sender->getName()} {$url->wowbr}"), $this->eid);
+API::setPercentage(100, $this->eid);
+}
 	if($this->getConfig()->get("Popup") == true){
 $player->getlevel()->addSound(new ExplodeSound($player));
 if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
@@ -385,6 +497,10 @@ $moneye = $this->eco->myMoney($sender);
                }
 $sender->sendMessage("§9[§aCasino§9]§6» §e♦§6{$url->won}:§a {$moneyd} $\n §e{$url->bal}§a {$moneye} $");
 }
+if (substr($v, 0, 6) === "v0.16."){
+sleep(10);
+API::removeBossBar($geto, $this->eid);
+}
 }
 if($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") != null){
 $moneye = $this->eco->myMoney($sender); 
@@ -395,6 +511,12 @@ $moneye = $this->eco->myMoney($sender);
                }
 if($money <= $rich){
 	$moneyd = $money - $rich;
+	
+if (substr($v, 0, 6) === "v0.16."){
+$this->eid = API::addBossBar([$sender->getPlayer()], "§e{$sender->getName()} {$url->lostbr}");
+API::setTitle(sprintf("§e{$sender->getName()} {$url->lostbr}"), $this->eid);
+API::setPercentage(100, $this->eid);
+}
 	if($this->getConfig()->get("Popup") == true){
 
 
@@ -419,6 +541,11 @@ $moneye = $this->eco->myMoney($sender);
                $moneye = EconomyPlus::getInstance()->getMoney($sender);
                }
 $sender->sendMessage("§9[§aCasino§9]§6» §e♦§6{$url->lost}:§a {$moneyd} $\n §e{$url->bal}§a {$moneye} $");
+}
+if (substr($v, 0, 6) === "v0.16."){
+sleep(10);
+
+API::removeBossBar($geto, $this->eid);
 }
 }
      }else{
