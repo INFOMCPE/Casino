@@ -30,6 +30,7 @@ deploy:
   file: "/home/travis/build/PocketMine-MP/plugins/DevTools/Casino*.phar"
   skip_cleanup: true
   overwrite: true
+  api_key: "$key"
   on:
     tags: false
 
