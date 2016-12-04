@@ -24,6 +24,8 @@ use pocketmine\utils\Random;
 use pocketmine\level\sound\{ClickSound, PopSound, ButtonClickSound, FizzSound, ExplodeSound, BlockPlaceSound, GenericSound, NoteblockSound, EndermanTeleportSound, BatSound};
 use pocketmine\event\player\PlayerEvent;
 use EconomyPlus\EconomyPlus;
+use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\block\SignChangeEvent;
 use Casino\CheckVersionTask;
 use Casino\UpdaterTask;
 use BossBarAPI\API;
@@ -43,6 +45,140 @@ public function onEnable(){
                $this->eco= $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
           }
 }
+public function SignChange(SignChangeEvent $event) {
+	$cheap = $this->getConfig()->get("cheap");
+$dear = $this->getConfig()->get("dear");
+$rich = $this->getConfig()->get("rich");
+$lang = $this->getConfig()->get("lang");
+if($lang == 1){
+$urlh = file_get_contents('http://infomcpe.ru/updater.php?pluginname=Casino_RU'); 
+        $url = json_decode($urlh); 
+        $test = $url->betting_preview;
+        }
+    if($lang == 2){
+$urlh = file_get_contents('http://infomcpe.ru/updater.php?pluginname=Casino_EN'); 
+        $url = json_decode($urlh); 
+        $test = $url->betting_preview;
+        } 
+        if($lang == null){
+$urlh = file_get_contents('http://infomcpe.ru/updater.php?pluginname=Casino_EN'); 
+        $url = json_decode($urlh); 
+        $test = $url->betting_preview;
+        } 
+        if($event->getBlock()->getId() == 68 || $event->getBlock()->getId() == 63){ 
+		$sign = $event->getPlayer()->getLevel()->getTile($event->getBlock());
+		   $money = $this->getConfig()->get("money_of_sign");
+	                if ($event->getLine(0) == "[Casino]" && $event->getPlayer()->isOp() && $event->getLine(1) == "cheap"){	
+                            $event->setLine(0,"§f[§eCasino§f]");
+                              $event->getLine(1);
+                              $event->getLine(2);
+                              $event->getLine(3);
+                              $cheaptext = $url->play_cheap;
+                              $str = "§e{$url->play_cheap}";
+                       $n = round(strlen($str)/2);
+                       $stra[0] = substr($str, 0, $n);
+                       $stra[1] = substr($str, $n);
+                             $event->setLine(1,"§l{$stra[0]}");
+                              $event->setLine(2,"§e{$stra[1]}");
+                              $event->setLine(3,"§a++ {$cheap}$ ++");
+                                $player = $event->getPlayer();
+                           $player->sendMessage("§f[§eCasino§f] {$url->create_sign}");
+                           //create a new sign 
+	            }
+	if ($event->getLine(0) == "[Casino]" && $event->getPlayer()->isOp() && $event->getLine(1) == "dear"){	
+                            $event->setLine(0,"§f[§eCasino§f]");
+                              $event->getLine(1);
+                              $event->getLine(2);
+                              $event->getLine(3);
+                             
+                              $str = "§e{$url->play_dear}";
+                       $n = round(strlen($str)/2);
+                       $stra[0] = substr($str, 0, $n);
+                       $stra[1] = substr($str, $n);
+                             $event->setLine(1,"§l{$stra[0]}");
+                              $event->setLine(2,"§e{$stra[1]}");
+                              $event->setLine(3,"§a++ {$dear}$ ++");
+                      $player = $event->getPlayer();
+                           $player->sendMessage("§f[§eCasino§f] {$url->create_sign}");
+                           //create a new sign 
+	            }
+	if ($event->getLine(0) == "[Casino]" && $event->getPlayer()->isOp() && $event->getLine(1) == "rich"){	
+                            $event->setLine(0,"§f[§eCasino§f]");
+                              $event->getLine(1);
+                              $event->getLine(2);
+                              $event->getLine(3);
+                             
+                              $str = "§e{$url->play_rich}";
+                       $n = round(strlen($str)/2);
+                       $stra[0] = substr($str, 0, $n);
+                       $stra[1] = substr($str, $n);
+                             $event->setLine(1,"§e{$stra[0]}");
+                              $event->setLine(2,"§e{$stra[1]}");
+                              $event->setLine(3,"§a++ {$rich}$ ++");
+                      $player = $event->getPlayer();
+                           $player->sendMessage("§f[§eCasino§f] {$url->create_sign}");
+                           //create a new sign 
+	            }
+	       }
+	}
+	public function onPlayerTouch(PlayerInteractEvent $event){
+		$cheap = $this->getConfig()->get("cheap");
+$dear = $this->getConfig()->get("dear");
+$rich = $this->getConfig()->get("rich");
+$lang = $this->getConfig()->get("lang");
+if($lang == 1){
+$urlh = file_get_contents('http://infomcpe.ru/updater.php?pluginname=Casino_RU'); 
+        $url = json_decode($urlh); 
+        $test = $url->betting_preview;
+        }
+    if($lang == 2){
+$urlh = file_get_contents('http://infomcpe.ru/updater.php?pluginname=Casino_EN'); 
+        $url = json_decode($urlh); 
+        $test = $url->betting_preview;
+        } 
+        if($lang == null){
+$urlh = file_get_contents('http://infomcpe.ru/updater.php?pluginname=Casino_EN'); 
+        $url = json_decode($urlh); 
+        $test = $url->betting_preview;
+        } 
+              if($event->getBlock()->getId() == 68 || $event->getBlock()->getId() == 63){ 
+	           $sign = $event->getPlayer()->getLevel()->getTile($event->getBlock()); 
+	          	
+			       $signtext = $sign->getText();
+			
+			          
+                        if($signtext[0] == "§f[§eCasino§f]"  ){
+                        	
+                        	if($signtext[3] == "§a++ {$cheap}$ ++"){
+                        
+                        	$cmd1 = str_replace($event->getPlayer(), $event->getPlayer()->getName(), "c cheap");
+                           $this->getServer()->dispatchCommand($event->getPlayer(), $cmd1);
+                           }
+                        }
+               
+            if($signtext[0] == "§f[§eCasino§f]"){
+            	    $strd = "§e{$url->play_dear}";
+                       $nd = round(strlen($strd)/2);
+                       $strad[0] = substr($strd, 0, $nd);     
+            	if($signtext[3] == "§a++ {$dear}$ ++"){
+                        
+                        	$cmd1 = str_replace($event->getPlayer(), $event->getPlayer()->getName(), "c dear");
+                           $this->getServer()->dispatchCommand($event->getPlayer(), $cmd1);
+                           }
+                        }
+                         
+            if($signtext[0] == "§f[§eCasino§f]" ){
+            	
+                        if($signtext[3] == "§a++ {$rich}$ ++"){
+                        	$cmd1 = str_replace($event->getPlayer(), $event->getPlayer()->getName(), "c rich");
+                           $this->getServer()->dispatchCommand($event->getPlayer(), $cmd1);
+                           }
+                        }
+                        }
+                        }
+	                 
+					              					
+						
 public function getLang(){
 	    $this->data = $this->getDataFolder();
         $this->cfg = new Config($this->data . "config.yml", Config::YAML);
